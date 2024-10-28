@@ -1,273 +1,132 @@
 <!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <title>Ballet</title>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Click to make Circle</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f7f7f7;
+      overflow: hidden;
+    }
 
-    <style>
-        body {
-          font-family: 'helvetica', sans-serif;
-          padding: 0;
-          background-color: #050505;
-          color: #e8e8e8;
-          display: inline-block; /* baseline 기준으로 조정하려면 inline-block 필요 */
-          transform-origin: top; /* 기준점을 하단(기본적으로 baseline 근처)으로 설정 */
-          margin: 50px;
-        }
+    h1 {
+      font-family: Helvetica, sans-serif;
+      font-size: 1.5rem;
+      font-weight: 300;
+      color: #333;
+      margin-bottom: 150px;
+    }
 
-        /* 제목 */
-        .Ballet {
-          font-weight: 700;
-          font-size: 80pt;
-          color: #9ED0FF;
-          font-stretch: condensed;
-          display: inline-block; /* baseline 기준으로 조정하려면 inline-block 필요 */
-          transform-origin: bottom left; /* 기준점을 하단(기본적으로 baseline 근처)으로 설정 */
-          transition: transform 0.5s ease;
-        }
+    .shape {
+      width: 300px;
+      height: 300px;
+      transition: all 1s ease;
+    }
 
-        .Ballet:hover {
-          transform: scale(0.8, 1.1) skew(-10deg);
-        }
+    /* 커서 대신 표시할 원 */
+    .custom-cursor {
+      width: 20px;
+      height: 20px;
+      background-color: #fcba03;
+      border-radius: 50%;
+      position: absolute;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease;
+      display: none;
+    }
+  </style>
+</head>
+<body>
 
-        .h1 {
-          font-weight: 600;
-          font-size: 15pt;
-          color: #050505;
-          background-color: #9ED0FF;
-        }
+  <h1>Click to make Circle</h1>
+  <div class="shape" id="shape"></div>
+  <div class="custom-cursor" id="customCursor"></div> 
 
-        /* 발레리나 */
-        .image-container {
-          width: 300px;
-          height: 300px;
-        }
+  <script>
+    let sides = 3; // 삼각형부터 시작!!!!
+    const shape = document.getElementById("shape");
+    const customCursor = document.getElementById("customCursor");
 
-        .image {
-          width: 100%;
-          height: 100%;
-          transition: opacity 1s ease;
-          text-align: right; /* 이미지를 오른쪽 정렬 */
-        }
+    const colors = [
+      "skyblue",    // 삼각형
+      "coral",      // 사각형
+      "lightgreen", // 오각형
+      "#fff2a8",       // 육각형
+      "lightpink",  // 칠각형
+      "#4dfcff",     // 팔각형
+      "lightgray",  // 구각형
+      "#7db8f0",   // 십각형
+      "mediumseagreen", // 십일각형
+      "tomato",     // 십이각형
+      "#fcba03" // 원
+    ];
 
-        .image2 {
-          width: 50%;
-          height: 50%;
-          text-align: right; /* 이미지를 오른쪽 정렬 */
-          cursor: pointer; /* 클릭 가능한 이미지 */
-        }
+    function generatePolygon(sides) {
+      const angleOffset = -Math.PI / 2;
+      const angle = 2 * Math.PI / sides;
+      const points = [];
 
-        .image-container:hover .image {
-          content: url('Ballet2.png'); /* hover 상태일 때 새로운 이미지 */
-        }
-        
-        /* table 설정 */
-        table {
-          width: 100%; /* 테이블을 페이지 전체 너비로 설정 */
-          border-collapse: collapse; /* 테이블 경계를 하나로 합침 */
-          table-layout: fixed;
-        }
-
-        td {
-          font-size: 1rem;
-          line-height: 1.6;
-          padding: 10px;
-          vertical-align: top;
-        }
-
-        .h4 {
-          font-size: 1.2rem;
-          line-height: 1.6;
-          font-weight: bold;
-          padding: 10px;
-          vertical-align: top;
-        }
-
-        /* barre work 호버 */
-        .plié, .Cambré, .grand, .relevé {
-          font-size: 1.8rem;
-          line-height: 1.3;
-          font-weight: bold;
-          padding: 10px;
-          vertical-align: top;
-          transform-origin: bottom left; /* 기준점을 하단(기본적으로 baseline 근처)으로 설정 */
-          transition: transform 0.5s ease;
-        }
-        .tendu {
-          font-size: 1.8rem;
-          line-height: 1.3;
-          font-weight: bold;
-          padding: 10px;
-          vertical-align: top;
-          transform-origin: top left; /* 기준점을 하단(기본적으로 baseline 근처)으로 설정 */
-          transition: transform 0.5s ease;
-        }
-        .plié:hover { transform: scale(1.2, 0.8); }
-        .Cambré:hover { transform: rotate(20deg); }
-        .tendu:hover { transform: skew(30deg); }
-        .grand:hover { transform: rotate(-65deg); }
-        .relevé:hover { transform: scale(0.5, 1.5); }
-
-        /* 모달 스타일 */
-        .modal {
-          display: none; /* 기본적으로 숨김 */
-          position: fixed;
-          z-index: 1;
-          left: 0;
-          top: 0;
-          width: 100%;
-          height: 100%;
-          overflow: auto;
-          background-color: rgba(0, 0, 0, 0.8); /* 배경을 어둡게 */
-        }
-
-        .modal-content {
-          background-color: #9ED0FF;
-          color: #000000;
-          margin: 15% auto;
-          padding: 20px;
-          width: 200px;
-        }
-
-        .close {
-          color: #aaa;
-          float: right;
-          font-size: 28px;
-          font-weight: bold;
-        }
-
-        .close:hover,
-        .close:focus {
-          color: black;
-          text-decoration: none;
-          cursor: pointer;
-        }
-    </style>
-  </head>
-
-  <body>
-
-    <table>
-      <tr>
-        <td class="Ballet">Ballet 
-          <br>
-          <div class="h1">
-            the harder the more beautiful
-
-          </div>
-
-        </td>
-        <td class="image-container">
-          <img src="Ballet1.png" class="image">
-        </td>
-      </tr>
-    </table>
-    <br><br><br><br><br>
-
-    <div class="h1"> &nbsp;Material</div>
-    <br>
-
-    <table>
-      <tr>
-        <td class="h4"> Barre <br>
-          <img src="barre.png" class="image2">
-        </td>
-        <td class="h4"> Bag <br>
-          <img src="bag.png" class="image2" onclick="showModal()"> <!-- onclick 이벤트 추가 -->
-        </td>
-      </tr>    
-    </table>
-    <br><br><br><br><br><br>
-
-    <div class="h1"> &nbsp;Basic Positions</div>
-    <br>
-
-    <table>
-      <tr>
-        <td class="h4"> 1st </td>
-        <td class="h4"> 2nd </td>
-        <td class="h4"> 3rd </td>
-        <td class="h4"> 4th </td>
-        <td class="h4"> 5th </td>
-      </tr>    
-
-      <tr>
-        <td> <img src="1.png" class="image"> </td>
-        <td> <img src="2.png" class="image"> </td>
-        <td> <img src="3.png" class="image"> </td>
-        <td> <img src="4.png" class="image"> </td>
-        <td> <img src="5.png" class="image"> </td>
-      </tr>    
-
-      <tr>
-        <td> 발 뒤꿈치를 서로 붙이고 발 끝을 벌린다. </td>
-        <td> 1번에서 발 뒤축을 어깨 너비로 뗀다. </td>
-        <td> 1번에서 한 발 뒤꿈치를 다른 발 중간쯤 되게 붙인다. </td>
-        <td> 3번에서 발 하나 정도 앞뒤로 간격을 벌리고 뒷 발이 보이지 않게 다리를 더 깊게 교차한다. </td>
-        <td> 4번에서 앞 발을 그대로 끌어와 맞붙인다. </td>
-      </tr>    
-    </table>
-    <br><br><br><br><br><br>
-
-    <div class="h1"> &nbsp;Barre work</div>
-    <br>
-
-    <table>
-      <tr>
-        <td class="plié"> plié </td>
-        <td class="Cambré"> cambré </td>
-        <td class="tendu"> tendu </td>
-        <td class="grand"> grand battement </td>
-        <td class="relevé"> relevé </td>
-      </tr>           
-        
-      <tr>
-        <td> <img src="p.png" class="image"> </td>
-        <td> <img src="c.png" class="image"> </td>
-        <td> <img src="t.png" class="image"> </td>
-        <td> <img src="g.png" class="image"> </td>
-        <td> <img src="r.png" class="image"> </td>
-      </tr>    
-
-      <tr>
-        <td> 꼿꼿이 서서 무릎을 구부린다 </td>
-        <td> 골반을 고정시킨 뒤 가슴과 등을 사용하여 상체를 구부린다 </td>
-        <td> 새끼발가락부터 포인한 상태로 발을 뻗는다 </td>
-        <td> 발을 힘차게 차 뻗어 올린다 </td>
-        <td> 발끝을 세우고 온 몸이 하늘을 향하도록 길게 위로 뻗는다 </td>
-      </tr>    
-    </table>
-    <br><br>
-
-    <!-- 모달 구조 -->
-    <div id="myModal" class="modal">
-      <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <h2>준비물</h2>
-          <li>Leotard</li>
-          <li>Skirt</li>
-          <li>Tights</li>
-          <li>Point Shoes</li>
-      </div>
-    </div>
-
-    <script>
-      // 모달 열기
-      function showModal() {
-        document.getElementById("myModal").style.display = "block";
+      for (let i = 0; i < sides; i++) {
+        const x = 50 + 50 * Math.cos(i * angle + angleOffset);
+        const y = 50 + 50 * Math.sin(i * angle + angleOffset);
+        points.push(`${x}% ${y}%`);
       }
 
-      // 모달 닫기
-      function closeModal() {
-        document.getElementById("myModal").style.display = "none";
-      }
+      return `polygon(${points.join(", ")})`;
+    }
 
-      // 모달 배경 클릭 시 닫기
-      window.onclick = function(event) {
-        if (event.target == document.getElementById("myModal")) {
-          closeModal();
-        }
-      }
-    </script>
+    // 페이지 로드 시 초기 삼각형 설정 따봉 gpt야 고마워
+    document.addEventListener("DOMContentLoaded", function() {
+      shape.style.clipPath = generatePolygon(sides); // 삼각형 적용
+      shape.style.backgroundColor = colors[sides - 3]; // 초기 색상 설정
+    });
 
-  </body>
+    // 클릭 시 도형 변경
+    shape.addEventListener("click", function() {
+      if (sides < 12) {
+        sides++;
+        shape.style.clipPath = generatePolygon(sides);
+        shape.style.backgroundColor = colors[sides - 3];
+      } else if (sides === 12) {
+        shape.style.clipPath = "circle(50% at 50% 50%)"; // 마지막에 원
+        shape.style.backgroundColor = colors[10];
+        sides++;
+      } else {
+        sides = 3; // 다시 삼각형으로 초기화
+        shape.style.clipPath = generatePolygon(sides); // 삼각형 적용
+        shape.style.backgroundColor = colors[0];
+      }
+    });
+
+
+
+//마우스 관련
+
+    // 마우스 이동에 따라 원 커서 이동
+    document.addEventListener("mousemove", function(e) {
+      customCursor.style.left = `${e.pageX}px`;
+      customCursor.style.top = `${e.pageY}px`;
+    });
+
+    // 도형 위에 마우스 호버시, 커서 none 원 보임
+    shape.addEventListener("mouseenter", function() {
+      customCursor.style.display = "block";
+      document.body.style.cursor = "none"; // 기본 커서 숨김
+    });
+
+    // 도형에서 마우스가 미호버시, 원 안보임 커서 표시
+    shape.addEventListener("mouseleave", function() {
+      customCursor.style.display = "none";
+      document.body.style.cursor = "default";
+    });
+  </script>
+
+</body>
 </html>
