@@ -1,132 +1,145 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Click to make Circle</title>
-  <style>
-    body {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: #f7f7f7;
-      overflow: hidden;
-    }
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="main.css">
+    <title>Document</title>
+    <style>
+        html {
+            height: 100%;
+            margin: 0;
+        }
 
-    h1 {
-      font-family: Helvetica, sans-serif;
-      font-size: 1.5rem;
-      font-weight: 300;
-      color: #333;
-      margin-bottom: 150px;
-    }
+        body {
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #262525;
+            margin: 0;
+        }
 
-    .shape {
-      width: 300px;
-      height: 300px;
-      transition: all 1s ease;
-    }
+        h1 {
+            margin-top: 100px;   
+            margin-bottom: 60px;
+            font-family: "Gowun Batang", serif;
+            font-size: 25px;
+            align: center;
+            font-style: normal;
+            color: #ffffff;
+        }
 
-    /* 커서 대신 표시할 원 */
-    .custom-cursor {
-      width: 20px;
-      height: 20px;
-      background-color: #fcba03;
-      border-radius: 50%;
-      position: absolute;
-      pointer-events: none;
-      transform: translate(-50%, -50%);
-      transition: transform 0.1s ease;
-      display: none;
-    }
-  </style>
+        .satellites {
+            animation: rotate-axis 30s linear infinite;
+            transform-style: preserve-3d;
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+
+        @keyframes rotate-axis {
+            from {
+                transform: perspective(800px) rotateY(0deg);
+            }
+            to {
+                transform: perspective(800px) rotateY(-360deg);
+            }
+        }
+
+        .satellite {
+            position: absolute;
+            width: 100px;
+            transform: rotateY(calc(var(--i) * 15deg)) translateZ(500px);
+            transition: transform 0.5s ease;
+            cursor: pointer;
+        }
+        .center {
+            z-index: 10; /* 평면 모드에서 중앙 이미지가 위로 보이도록 설정 */
+        }
+    </style>
 </head>
 <body>
+    <h1>주마등(走馬燈)</h1>
+    <div class="satellites" onclick="toggleView(event)">
+        <!-- 24개의 이미지 -->
+        <img class="satellite" style="--i: 0; top: 80px" src="1.JPEG" data-index="0">
+        <img class="satellite" style="--i: 1; top: 80px" src="2.JPEG" data-index="1">
+        <img class="satellite" style="--i: 2; top: 80px" src="3.JPEG" data-index="2">
+        <img class="satellite" style="--i: 3; top: 80px" src="4.JPEG" data-index="3">
+        <img class="satellite" style="--i: 4; top: 80px" src="5.JPEG" data-index="4">
+        <img class="satellite" style="--i: 5; top: 80px" src="6.JPEG" data-index="5">
+        <img class="satellite" style="--i: 6; top: 80px" src="7.JPEG" data-index="6">
+        <img class="satellite" style="--i: 7; top: 80px" src="8.JPEG" data-index="7">
+        <img class="satellite" style="--i: 8; top: 80px" src="9.JPEG" data-index="8">
+        <img class="satellite" style="--i: 9; top: 80px" src="10.JPEG" data-index="9">
+        <img class="satellite" style="--i: 10; top: 80px" src="11.JPG" data-index="10">
+        <img class="satellite" style="--i: 11; top: 80px" src="12.JPG" data-index="11">
+        <img class="satellite" style="--i: 12; top: 80px" src="13.jpg" data-index="12">
+        <img class="satellite" style="--i: 13; top: 80px" src="14.JPG" data-index="13">
+        <img class="satellite" style="--i: 14; top: 80px" src="15.JPG" data-index="14">
+        <img class="satellite" style="--i: 15; top: 80px" src="16.JPG" data-index="15">
+        <img class="satellite" style="--i: 16; top: 80px" src="17.JPG" data-index="16">
+        <img class="satellite" style="--i: 17; top: 80px" src="18.JPG" data-index="17">
+        <img class="satellite" style="--i: 18; top: 80px" src="19.JPG" data-index="18">
+        <img class="satellite" style="--i: 19; top: 80px" src="20.JPG" data-index="19">
+        <img class="satellite" style="--i: 20; top: 80px" src="21.JPG" data-index="20">
+        <img class="satellite" style="--i: 21; top: 80px" src="22.JPG" data-index="21">
+        <img class="satellite" style="--i: 22; top: 80px" src="23.JPG" data-index="22">
+        <img class="satellite" style="--i: 23; top: 80px" src="24.JPG" data-index="23">
+    </div>
 
-  <h1>Click to make Circle</h1>
-  <div class="shape" id="shape"></div>
-  <div class="custom-cursor" id="customCursor"></div> 
+    <script>
+        let isFlat = false;
 
-  <script>
-    let sides = 3; // 삼각형부터 시작!!!!
-    const shape = document.getElementById("shape");
-    const customCursor = document.getElementById("customCursor");
+        function toggleView(event) {
+            const satellitesContainer = document.querySelector('.satellites');
+            const clickedSatellite = event.target.closest('.satellite');
+            
+            if (isFlat) {
+                // 원형 모드로 돌아가기
+                satellitesContainer.classList.remove('flat');
+                satellitesContainer.style.animation = 'rotate-axis 30s linear infinite';
+                resetPositions();
+            } else if (clickedSatellite) {
+                // 평면 모드로 변경
+                const centerIndex = parseInt(clickedSatellite.getAttribute('data-index'), 10);
+                satellitesContainer.classList.add('flat');
+                satellitesContainer.style.animation = 'none';
+                spreadImages(centerIndex);
+            }
+            
+            isFlat = !isFlat; // 상태 토글
+        }
 
-    const colors = [
-      "skyblue",    // 삼각형
-      "coral",      // 사각형
-      "lightgreen", // 오각형
-      "#fff2a8",       // 육각형
-      "lightpink",  // 칠각형
-      "#4dfcff",     // 팔각형
-      "lightgray",  // 구각형
-      "#7db8f0",   // 십각형
-      "mediumseagreen", // 십일각형
-      "tomato",     // 십이각형
-      "#fcba03" // 원
-    ];
+        function spreadImages(centerIndex) {
+            const satellites = document.querySelectorAll('.satellite');
+            satellites.forEach((satellite, i) => {
+                const distance = i - centerIndex;
+                if (distance === 0) {
+                    satellite.classList.add('center');
+                    satellite.style.transform = 'translateX(0) scale(3)';
+                    opacity: 1;
+                } else {
+                    satellite.classList.remove('center');
+                    const offset = 200;
+                    const spread = Math.abs(distance) * offset;
+                    const direction = distance > 0 ? 1 : -1;
+                    satellite.style.transform = `translateX(${direction * spread}px) scale(1.2)`;
+                }
+            });
+        }
 
-    function generatePolygon(sides) {
-      const angleOffset = -Math.PI / 2;
-      const angle = 2 * Math.PI / sides;
-      const points = [];
-
-      for (let i = 0; i < sides; i++) {
-        const x = 50 + 50 * Math.cos(i * angle + angleOffset);
-        const y = 50 + 50 * Math.sin(i * angle + angleOffset);
-        points.push(`${x}% ${y}%`);
-      }
-
-      return `polygon(${points.join(", ")})`;
-    }
-
-    // 페이지 로드 시 초기 삼각형 설정 따봉 gpt야 고마워
-    document.addEventListener("DOMContentLoaded", function() {
-      shape.style.clipPath = generatePolygon(sides); // 삼각형 적용
-      shape.style.backgroundColor = colors[sides - 3]; // 초기 색상 설정
-    });
-
-    // 클릭 시 도형 변경
-    shape.addEventListener("click", function() {
-      if (sides < 12) {
-        sides++;
-        shape.style.clipPath = generatePolygon(sides);
-        shape.style.backgroundColor = colors[sides - 3];
-      } else if (sides === 12) {
-        shape.style.clipPath = "circle(50% at 50% 50%)"; // 마지막에 원
-        shape.style.backgroundColor = colors[10];
-        sides++;
-      } else {
-        sides = 3; // 다시 삼각형으로 초기화
-        shape.style.clipPath = generatePolygon(sides); // 삼각형 적용
-        shape.style.backgroundColor = colors[0];
-      }
-    });
-
-
-
-//마우스 관련
-
-    // 마우스 이동에 따라 원 커서 이동
-    document.addEventListener("mousemove", function(e) {
-      customCursor.style.left = `${e.pageX}px`;
-      customCursor.style.top = `${e.pageY}px`;
-    });
-
-    // 도형 위에 마우스 호버시, 커서 none 원 보임
-    shape.addEventListener("mouseenter", function() {
-      customCursor.style.display = "block";
-      document.body.style.cursor = "none"; // 기본 커서 숨김
-    });
-
-    // 도형에서 마우스가 미호버시, 원 안보임 커서 표시
-    shape.addEventListener("mouseleave", function() {
-      customCursor.style.display = "none";
-      document.body.style.cursor = "default";
-    });
-  </script>
-
+        function resetPositions() {
+            const satellites = document.querySelectorAll('.satellite');
+            satellites.forEach((satellite, i) => {
+                satellite.style.transform = `rotateY(calc(${i} * 15deg)) translateZ(500px)`;
+                satellite.style.opacity = "1";
+                satellite.style.zIndex = "1";
+                satellite.classList.remove('center');
+            });
+        }
+    </script>
 </body>
 </html>
