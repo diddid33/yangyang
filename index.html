@@ -5,31 +5,52 @@
     <link rel="stylesheet" href="main.css">
     <title>Document</title>
     <style>
-        html {
-            height: 100%;
+        html, body {
+            height: 120%;
             margin: 0;
-        }
-
-        body {
             padding: 0;
-            width: 100%;
-            height: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            background-color: #262525;
-            margin: 0;
+            justify-content: center;
+            background: linear-gradient(0deg, rgb(7, 7, 42), #111);
         }
 
         h1 {
-            margin-top: 100px;   
+            margin-top: 100px;
             margin-bottom: 60px;
             font-family: "Gowun Batang", serif;
             font-size: 25px;
-            align: center;
-            font-style: normal;
-            color: #ffffff;
+            color:rgb(0, 0, 0);
         }
+
+        section {
+        position: relative;
+        top: -40vh;
+        width: 600px;
+        height: 600px;
+        }
+
+        .noise {
+        margin-top: -10%;
+        width: 100%;
+        height: 120%;
+        background: radial-gradient(
+            circle at 50% 50%,
+            rgba(0, 0, 0, 1),
+            rgba(0, 0, 0, 0)
+            ),
+            url("data:image/svg+xml,%3Csvg viewBox='0 0 600 600' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        filter: contrast(145%) brightness(650%) invert(100%);
+        mix-blend-mode: screen;
+        }
+
+        @media all and (-webkit-min-device-pixel-ratio:0) and (min-resolution: .001dpcm) {
+        .noise {
+            filter: contrast(125%) brightness(650%) invert(100%);
+            mix-blend-mode: color-dodge;
+        }
+        
 
         .satellites {
             animation: rotate-axis 30s linear infinite;
@@ -40,11 +61,9 @@
         }
 
         @keyframes rotate-axis {
-            from {
-                transform: perspective(800px) rotateY(0deg);
+            from {transform: perspective(800px) rotateY(0deg);
             }
-            to {
-                transform: perspective(800px) rotateY(-360deg);
+            to {transform: perspective(800px) rotateY(-360deg);
             }
         }
 
@@ -52,43 +71,119 @@
             position: absolute;
             width: 100px;
             transform: rotateY(calc(var(--i) * 15deg)) translateZ(500px);
-            transition: transform 0.5s ease;
+            transition: transform 0.5s ease, opacity 0.5s ease;
             cursor: pointer;
+            box-shadow: 0px 5px 12px rgb(19, 19, 19);
         }
-        .center {
-            z-index: 10; /* 평면 모드에서 중앙 이미지가 위로 보이도록 설정 */
+
+        .info {
+            display: none;
+            position: absolute;
+            top: 700px;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            color: #ffffff;
+            padding: 10px 20px;
         }
+
+        .info.visible {
+            display: block;
+        }
+
+        .info .title {
+            font-family: 'pretendard', sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            color: ;rgba(255, 255, 255);;
+            text-align: end;
+            padding: 10px 20px 20px 20px;
+            text-shadow: 0px 0px 8px rgb(7, 7, 42)
+        }
+
+        .info .caption {
+            font-family: 'pretendard', sans-serif;
+            font-size: 16px;
+            font-weight: 200;
+            color: #ffffff;
+            line-height: 1.8;
+            text-align: justify;
+            width: 500px;
+            top: 200px;
+        }
+
+        .marquee {
+            position: absolute;
+            top: 20%;  /* 화면의 세로 중앙 */
+            left: 50%;  /* 화면의 가로 중앙 */
+            white-space: pre-wrap;  /* 텍스트가 한 줄로 표시되도록 */
+            font-family: 'Pretendard', sans-serif;
+            font-size: 16px;
+            font-weight: 100;
+            color: #ffffff;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.6);
+            z-index: 100;
+            animation: scroll-left 15s linear infinite;  /* 애니메이션 15초 동안 */
+        }
+
+        /* 애니메이션: 텍스트가 오른쪽에서 왼쪽으로 흘러감 */
+        @keyframes scroll-left {
+            0% {
+                transform: translate(-50%, -50%) translateX(100vw); /* 시작: 화면 오른쪽 끝 */
+            }
+            100% {
+                transform: translate(-50%, -50%) translateX(-100vw); /* 끝: 화면 왼쪽 끝 */
+            }
+        }
+
     </style>
 </head>
 <body>
-    <h1>주마등(走馬燈)</h1>
+
+    <div class="marquee"> 스쳐지나가는 행복했던 모든 순간들을 담아</div>
+
+
+    <h1>走馬燈</h1>
+
+    <div class="circle"></div>
+
     <div class="satellites" onclick="toggleView(event)">
-        <!-- 24개의 이미지 -->
-        <img class="satellite" style="--i: 0; top: 80px" src="1.JPEG" data-index="0">
-        <img class="satellite" style="--i: 1; top: 80px" src="2.JPEG" data-index="1">
-        <img class="satellite" style="--i: 2; top: 80px" src="3.JPEG" data-index="2">
-        <img class="satellite" style="--i: 3; top: 80px" src="4.JPEG" data-index="3">
-        <img class="satellite" style="--i: 4; top: 80px" src="5.JPEG" data-index="4">
-        <img class="satellite" style="--i: 5; top: 80px" src="6.JPEG" data-index="5">
-        <img class="satellite" style="--i: 6; top: 80px" src="7.JPEG" data-index="6">
-        <img class="satellite" style="--i: 7; top: 80px" src="8.JPEG" data-index="7">
-        <img class="satellite" style="--i: 8; top: 80px" src="9.JPEG" data-index="8">
-        <img class="satellite" style="--i: 9; top: 80px" src="10.JPEG" data-index="9">
-        <img class="satellite" style="--i: 10; top: 80px" src="11.JPG" data-index="10">
-        <img class="satellite" style="--i: 11; top: 80px" src="12.JPG" data-index="11">
-        <img class="satellite" style="--i: 12; top: 80px" src="13.jpg" data-index="12">
-        <img class="satellite" style="--i: 13; top: 80px" src="14.JPG" data-index="13">
-        <img class="satellite" style="--i: 14; top: 80px" src="15.JPG" data-index="14">
-        <img class="satellite" style="--i: 15; top: 80px" src="16.JPG" data-index="15">
-        <img class="satellite" style="--i: 16; top: 80px" src="17.JPG" data-index="16">
-        <img class="satellite" style="--i: 17; top: 80px" src="18.JPG" data-index="17">
-        <img class="satellite" style="--i: 18; top: 80px" src="19.JPG" data-index="18">
-        <img class="satellite" style="--i: 19; top: 80px" src="20.JPG" data-index="19">
-        <img class="satellite" style="--i: 20; top: 80px" src="21.JPG" data-index="20">
-        <img class="satellite" style="--i: 21; top: 80px" src="22.JPG" data-index="21">
-        <img class="satellite" style="--i: 22; top: 80px" src="23.JPG" data-index="22">
-        <img class="satellite" style="--i: 23; top: 80px" src="24.JPG" data-index="23">
+        <img class="satellite" style="--i: 0; top: 100px" src="Artboard 1.png" data-index="0" data-title="사부작" data-caption="클레이 방과후에서 배를 내밀고 열심히 무언가를 만든다. 손을 가만히 두지 못하는 버릇을 나름 해소하고 있는 걸지도 모른다.  엄마 아빠는 내가 중학교에 들어설때쯤엔 공부외에 쓸데 없는 것은 하지 말라 하셨다. 가끔은 초등학교때로 돌아가고 싶었다.">
+        <img class="satellite" style="--i: 1; top: 100px" src="Artboard 2.png" data-index="1" data-title="해먹" data-caption="우리 가족은 주말마다 캠핑을 다녔다. 동생과 나는 밖에서 많이 놀아 둘다 얼굴이 까맣다. 해먹은 내가 캠핑을 좋아하게 만든 요인이기도 하다. 나무에서 떨어진적도 있고 해먹이 찢어진적도 있지만, 그만큼 스릴을 즐겼다. 저때는 동생과 잘 놀았던 것 같은데, 연락도 안한다,,,">
+        <img class="satellite" style="--i: 2; top: 100px" src="Artboard 3.png" data-index="2" data-title="사생활" data-caption="새봄이의 사생활ㅎㅎ 친구가 도서관에서 내 이름이 들어간 책 사진을 보내주었다. 이때부터 친구들이 보내준 내 이름이 들어간 사진들을 저장한 것 같다. 상당 수 차지하는 것은 의료계통이다. 산부인과, 약국, 한방병원 등등">
+        <img class="satellite" style="--i: 3; top: 100px" src="Artboard 4.png" data-index="3" data-title="둥둥" data-caption="친수성인 우리가족들은 물놀이를 참 좋아한다. 하루종일 바다에서 놀고 또 놀 수 있을 정도이다. 바다 한가운데 둥둥 떠있는 엄마와 동생이 귀여워서 찍었다. 괌에서의 스노쿨링이 그립다">
+        <img class="satellite" style="--i: 4; top: 100px" src="Artboard 5.png" data-index="4" data-title="마크라메" data-caption="한시도 손을 가만 못 둬 무언가를 만들었다. 왜인지는 모르겠지만 꼭 뭔가를 만들어야 해소가 되는 감정들이 있다.">
+        <img class="satellite" style="--i: 5; top: 100px" src="Artboard 6.png" data-index="5" data-title="루피" data-caption="매년 눈사람을 꼭 만든다. 이 해에는 루피 짤이 유행하기 시작해서 루피 눈사람을 만들어보았다. 눈사람을 만들어두고 다음날에 다시보니 눈오리들이 친구가 되어 있었다. 눈사람이 귀여운지 사람들이 귀여운지ㅎㅎ">
+        <img class="satellite" style="--i: 6; top: 100px" src="Artboard 7.png" data-index="6" data-title="자전거" data-caption="평촌은 자전거를 타고 다니기 좋은 동네이다. 어렸을 때부터 내가 졸업하고 재수할떄까지 항상 나의 이동수단은 자전거였다. 자전거를 타면 얼굴에 부는 바람이 기분이 좋다.">
+        <img class="satellite" style="--i: 7; top: 100px" src="Artboard 8.png" data-index="7" data-title="시립대" data-caption="나는 학교의 전경이 좋다. 서울시립공원이라고 누군가는 우스겟소리로 말하곤 하지만, 그런 공원스러운 점이 가장 마음에 드는 점이다. 자연과 어울러져있는 교정이 예쁘다.">
+        <img class="satellite" style="--i: 8; top: 100px" src="Artboard 9.png" data-index="8" data-title="크리스마스" data-caption="크리스마스가 얼마남지 않았다. 이 해의 크리스마스는 고등학교 친구들과 지냈던 것 같다. 항상 따뜻한 연말을 책임져주는 사람들이다.">
+        <img class="satellite" style="--i: 9; top: 100px" src="Artboard 10.png" data-index="9" data-title="이태원" data-caption="처음으로 혼자 이태원에 간날이었다. 가서 참 여기저기도 잘 돌아다녔다. 해당사진은 포스트포에틱스로 아트북을 구경할 수 있었다.">
+        <img class="satellite" style="--i: 10; top: 100px" src="Artboard 11.png" data-index="10" data-title="낙엽" data-caption="학교의 가을을 예쁘다. 낙엽과 과잠은 이상하게도 바람은 쌀쌀해졌지만, 마음은 포근하게 만드는 무언가가 있는 것 같다.">
+        <img class="satellite" style="--i: 11; top: 100px" src="Artboard 12.png" data-index="11" data-title="민둥결의" data-caption="고등학교 친구들과의 벚꽃나무 아래서 찍었다. 벚꽃은 안보이지만,,,ㅎ 다양한 색들의 아이스크림이 마치 우리들같다. 오래도록 함께했으면 좋겠다.">
+        <img class="satellite" style="--i: 12; top: 100px" src="Artboard 13.png" data-index="12" data-title="홍대" data-caption="광고동아리 애드피아에서 처음으로 홍대 세미나를 했던 날이었다. 이 날 OB세미나도 진행해서 참 좋은 경험이었다. 그런데 무엇보다도 사방이 창문으로 열려있어 5월의 시원한 바람을 맞으면서 느꼈던 분위기가 가장먼저 떠오른다.">
+        <img class="satellite" style="--i: 13; top: 100px" src="Artboard 14.png" data-index="13" data-title="한강" data-caption="한강에서 낮잠을 가장 잘 자는 사람은 나이지 않을까 싶다. 머리만 대면 잠이 온다. 누웠을때 보이는 하늘과 나무와 풀냄새가 좋다. 해가지는 것을 보면서 모든 긴장을 푸는 행위도 행복하다.">
+        <img class="satellite" style="--i: 14; top: 100px" src="Artboard 15.png" data-index="14" data-title="풀" data-caption="비가 많이 온 다음날이었던 것 같다. 풀을 축축하고 공기는 습했다. 습한 날씨를 무척이나 싫어하지만 물에 흠뻑 젖은 나무와 풀들은 예뻐보이는 것 같다. 나중에 이런 느낌으로 제대로 스냅사진 찍고싶다.">
+        <img class="satellite" style="--i: 15; top: 100px" src="Artboard 16.png" data-index="15" data-title="나비팀" data-caption="소중한 팀원들이다. 힘든일도 어려운일도 많지만, 모두들 긍정적으로 상황을 대처한다. 일과 삶의 태도를 배울 수 있었던 좋은 시간이었다.">
+        <img class="satellite" style="--i: 16; top: 100px" src="Artboard 17.png" data-index="16" data-title="경주" data-caption="무척 더운 여름이었다. 아스팔트의 열기에 발이 다 녹아버리는 것 같았다. 하지만 그럼에도 가장 좋았던 장소는 해당사진속의 월정교였다. 모든 곳이 더운데 월정교만큼은 에어컨이 없음에도 시원하고 편안했다. 나는 이곳의 원효대사와 요석공주의 사랑이야기도 좋아한다.">
+        <img class="satellite" style="--i: 17; top: 100px" src="Artboard 18.png" data-index="17" data-title="We love spring" data-caption="친구들이 싸온 나의 생일 케이크였다. 그런데 나는 역설적이게도 여름을 제일 좋아한다ㅎㅎ 이름값을 잘 못하는 것 같다.">
+        <img class="satellite" style="--i: 18; top: 100px" src="Artboard 19.png" data-index="18" data-title="청구역" data-caption="기숙사 근처 청구역에는 항상 다른 메시지가 쓰여있다. 가끔 저렇게 따뜻한 글이 적혀있는데, 어쩌면 자신이 듣고 싶은 말을 썼을 수도 있겠다 싶었다. 나도 좋은 말과 글을 나와 사람들에게 보여주고 싶다.">
+        <img class="satellite" style="--i: 19; top: 100px" src="Artboard 20.png" data-index="19" data-title="The future perfect" data-caption="미래가 오면 우리는 현재를 사랑할 정도로 이미 충분히 안전하다고 느낄 것이다미래가 오면 우리는 현재를 사랑할 정도로 이미 충분히 안전하다고 느낄 것이다미래가 오면 우리는 현재를 사랑할 정도로 이미 충분히 안전하다고 느낄 것이다미래가 오면 우리는 현재를 사랑할 정도로 이미 충분히 안전하다고 느낄 것이다">
+        <img class="satellite" style="--i: 20; top: 100px" src="Artboard 21.png" data-index="20" data-title="애드피아" data-caption="마지막 과제였다. 장장 2년간의 동아리 생활을 마무리 짓는 날,,, 뭔가 마음이 매우 싱숭생숭했다. 열심히 한 것 같기도 안 한것 같기도,,, 그동안 성장은 했었는지 긴가민가 했었는데, 돌이켜보니 참 알찼던 시간들이었다.">
+        <img class="satellite" style="--i: 21; top: 100px" src="Artboard 22.png" data-index="21" data-title="버스킹" data-caption="10월의 버스킹이었다. 나는 right now, espresso 등등을 불렀었다. 10월이지만 더운 가을에 적지만 많은 사람들이 응원해주며 들어주었던 기억이 생생하다.">
+        <img class="satellite" style="--i: 22; top: 100px" src="Artboard 23.png" data-index="22" data-title="조형관" data-caption="이제는 익숙해진 조형관의 계단이다. 나는 엘리베이터도 좋지만 조형관 만큼은 계단을 오르내리는 것도 좋은 것 같다. 특히 낮에는 따뜻한 햇빛이 들어와서 그런 것 같다.">
+        <img class="satellite" style="--i: 23; top: 100px" src="Artboard 24.png" data-index="23" data-title="프로스콘스" data-caption="창업 기숙사 근처에 있는 나의 애정하는 카페이다. 과제도 하고, 수다도 떨고,,, 이 동네에서 지낸 시간을 잊지 못할 것이다.">
     </div>
+
+    
+    <div class="info">
+        <h2 class="title"></h2>
+        <p class="caption"></p>
+    </div>
+
+    <section>
+        <div class="noise"></div>
+    </section>
 
     <script>
         let isFlat = false;
@@ -102,12 +197,14 @@
                 satellitesContainer.classList.remove('flat');
                 satellitesContainer.style.animation = 'rotate-axis 30s linear infinite';
                 resetPositions();
+                hideInfo();
             } else if (clickedSatellite) {
                 // 평면 모드로 변경
                 const centerIndex = parseInt(clickedSatellite.getAttribute('data-index'), 10);
                 satellitesContainer.classList.add('flat');
                 satellitesContainer.style.animation = 'none';
                 spreadImages(centerIndex);
+                showInfo(clickedSatellite);
             }
             
             isFlat = !isFlat; // 상태 토글
@@ -119,14 +216,16 @@
                 const distance = i - centerIndex;
                 if (distance === 0) {
                     satellite.classList.add('center');
-                    satellite.style.transform = 'translateX(0) scale(3)';
-                    opacity: 1;
+                    satellite.style.zIndex = '10';
+                    satellite.style.transform = 'translateX(0) scale(5)';
                 } else {
                     satellite.classList.remove('center');
-                    const offset = 200;
+                    const offset = 180;
                     const spread = Math.abs(distance) * offset;
                     const direction = distance > 0 ? 1 : -1;
                     satellite.style.transform = `translateX(${direction * spread}px) scale(1.2)`;
+                    satellite.style.zIndex = `${10 - Math.abs(distance)}`;
+                    satellite.style.opacity = `0.5`;
                 }
             });
         }
@@ -140,6 +239,24 @@
                 satellite.classList.remove('center');
             });
         }
+
+        function showInfo(satellite) {
+            const title = satellite.getAttribute('data-title');
+            const caption = satellite.getAttribute('data-caption');
+            const infoBox = document.querySelector('.info');
+            infoBox.querySelector('.title').textContent = title;
+            infoBox.querySelector('.caption').innerHTML = caption;
+
+            infoBox.classList.add('visible');
+        }
+
+        function hideInfo() {
+            const infoBox = document.querySelector('.info');
+            infoBox.classList.remove('visible');
+        }
+
+
+
     </script>
 </body>
 </html>
