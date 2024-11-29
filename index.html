@@ -115,7 +115,7 @@
 
         .marquee {
             position: absolute;
-            top: 20%;  /* 화면의 세로 중앙 */
+            top: var(--random-top);
             left: 50%;  /* 화면의 가로 중앙 */
             white-space: pre-wrap;  /* 텍스트가 한 줄로 표시되도록 */
             font-family: 'Pretendard', sans-serif;
@@ -255,6 +255,14 @@
             infoBox.classList.remove('visible');
         }
 
+        const marquee = document.querySelector('.marquee');
+        
+        function setRandomTop() {
+        const randomTop = Math.random() * 80 + 10; // 10% ~ 90% 사이 랜덤값
+        marquee.style.top = `${randomTop}%`;
+        }
+        setRandomTop();
+        marquee.addEventListener('animationiteration', setRandomTop);
 
 
     </script>
